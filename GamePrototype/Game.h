@@ -2,6 +2,7 @@
 #include "BaseGame.h"
 #include "utils.h"
 #include <vector>
+#include <Texture.h>
 
 #define player1Color Color4f{0.f,1.f,0.f,1.f}
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
@@ -57,6 +58,7 @@ private:
 	void CheckInput();
 
 	void RestartGame();
+	void UpdateText();
 
 	void DrawPlayers() const;
 	void DrawBullets() const;
@@ -77,4 +79,8 @@ private:
 
 	int m_CurrentBulletSpawn;
 
+	float m_Timer;
+	int m_Time;
+	Texture* m_TimerText;
+	TTF_Font* m_Font;
 };

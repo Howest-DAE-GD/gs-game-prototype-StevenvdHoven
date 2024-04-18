@@ -10,7 +10,11 @@ Game::Game(const Window& window)
 	m_Player2Position{ Point2f(window.width * 0.5f,window.height * 0.5f) + Vector2f(100,0) },
 	m_Player1Direction{},
 	m_Player2Direction{},
-	m_CurrentBulletSpawn{ 20 }
+	m_CurrentBulletSpawn{ 20 },
+	m_Time{ 0 },
+	m_Timer{0},
+	m_TimerText{nullptr},
+	m_Font{nullptr}
 {
 	Initialize();
 }
@@ -22,7 +26,9 @@ Game::~Game()
 
 void Game::Initialize()
 {
+	m_Font = TTF_OpenFont("arial.ttf", 20);
 	CreateBullets(10);
+	UpdateText();
 }
 
 void Game::Cleanup()
@@ -31,6 +37,13 @@ void Game::Cleanup()
 
 void Game::Update(float elapsedSec)
 {
+	m_Timer -= elapsedSec;
+	if (m_Timer <= 0) {
+		m_Time++;
+		m_Timer = 1.f;
+		UpdateText();
+
+	}
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -57,6 +70,21 @@ void Game::Draw() const
 
 	DrawPlayers();
 	DrawBullets();
+	int xWidth{ 0 };
+	int yWidth{ 0 };
+	const std::string text{ std::to_string(m_Time) };
+
+	TTF_SizeText(m_Font, text.c_str(), &xWidth, &yWidth);
+	Rectf viewport{ GetViewPort() };
+	Point2f position{ viewport.width,viewport.height };
+	Rectf drawRect
+	{
+		position.x - 100,
+		position.y - 100,
+		float(xWidth),
+		float(yWidth)
+	};
+	m_TimerText->Draw(position - Vector2f(100,100));
 
 }
 
@@ -134,11 +162,11 @@ void Game::CreateBullets(int amount)
 	const Point2f center{ viewport.width * 0.5f,viewport.height * 0.5f };
 	for (int index{ 0 }; index < amount; ++index)
 	{
-
+		int angle{ (rand() % 361) };
 		Point2f position
 		{
-			cosf((rand() % 361)) * (viewport.width * 0.75f) + viewport.width,
-			sinf((rand() % 361)) * (viewport.width * 0.75f) + viewport.height
+			(cosf(angle) * viewport.width) + viewport.width,
+			(sinf(angle) * viewport.width) + viewport.height,
 		};
 
 		Vector2f direction{ Vector2f(center) - Vector2f(position) };
@@ -292,8 +320,22 @@ void Game::RestartGame()
 	m_Player1Direction = Vector2f{};
 	m_Player2Direction = Vector2f{};
 	m_CurrentBulletSpawn = 20;
+	m_Time = 0;
+	m_Timer = 0;
+
+	UpdateText();
 
 	m_Bullets.clear();
+}
+
+void Game::UpdateText()
+{
+	if (m_TimerText != nullptr) {
+		delete m_TimerText;
+	}
+
+	std::string newText{ std::to_string(m_Time) };
+	m_TimerText = new Texture(newText, m_Font, Color4f{ 1,1,1,1 });
 }
 
 void Game::DrawPlayers() const
