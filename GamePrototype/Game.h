@@ -16,6 +16,7 @@ struct Bullet
 	Point2f m_Position;
 	Vector2f m_Direction;
 	bool m_IsDead;
+	bool m_IsActivated;
 };
 
 class Game : public BaseGame

@@ -165,8 +165,8 @@ void Game::CreateBullets(int amount)
 		int angle{ (rand() % 361) };
 		Point2f position
 		{
-			(cosf(angle) * viewport.width) + viewport.width,
-			(sinf(angle) * viewport.width) + viewport.height,
+			(cosf(angle) * viewport.width) + center.x,
+			(sinf(angle) * viewport.width) + center.y,
 		};
 
 		Vector2f direction{ Vector2f(center) - Vector2f(position) };
@@ -175,6 +175,7 @@ void Game::CreateBullets(int amount)
 		{
 			position,
 			direction,
+			false,
 			false
 		};
 
@@ -201,7 +202,14 @@ void Game::UpdateBullets(float elpasedSec)
 		
 		const Circlef bullet{ currentBullet.m_Position,bulletRadius };
 		if (!utils::IsOverlapping(viewport,bullet)) {
-			currentBullet.m_IsDead = true;
+			if (currentBullet.m_IsActivated) {
+				currentBullet.m_IsDead = true;
+			}
+			
+		}
+		else 
+		{
+			currentBullet.m_IsActivated = true;
 		}
 		
 	}
