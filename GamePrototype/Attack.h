@@ -9,7 +9,7 @@ class Attack
 
 		virtual void Update(float elapsedSec);
 		virtual void Draw() const;
-		virtual bool CheckCollision(const std::vector<const Circlef&> players) const;
+		virtual bool CheckCollision(const std::vector<Circlef> players) const;
 
 		bool IsActive();
 		void SetActive(bool active);

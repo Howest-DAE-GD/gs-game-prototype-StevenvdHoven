@@ -14,7 +14,9 @@ Game::Game(const Window& window)
 	m_Time{ 0 },
 	m_Timer{0},
 	m_TimerText{nullptr},
-	m_Font{nullptr}
+	m_Font{nullptr},
+	m_AttackManager{new AttackManager()},
+	m_WaveManager{new WaveManager(m_AttackManager)}
 {
 	Initialize();
 }
@@ -34,6 +36,9 @@ void Game::Cleanup()
 {
 	delete m_TimerText;
 	TTF_CloseFont(m_Font);
+
+	delete m_AttackManager;
+	delete m_WaveManager;
 }
 
 void Game::Update(float elapsedSec)
@@ -52,6 +57,15 @@ void Game::Update(float elapsedSec)
 	CheckMaxDistance();
 
 	m_AttackManager->Update(elapsedSec);
+	m_WaveManager->Update(elapsedSec);
+
+	const std::vector<Circlef> players
+	{
+		Circlef{m_Player1Position,playerRadius},
+		Circlef{m_Player2Position,playerRadius}
+	};
+
+	Attack* hitAttack{ m_AttackManager->CheckCollisionAttacks(players) };
 }
 
 void Game::Draw() const

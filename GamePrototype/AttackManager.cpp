@@ -6,6 +6,11 @@ AttackManager::AttackManager()
 {
 }
 
+AttackManager::~AttackManager()
+{
+    ClearAttacks();
+}
+
 void AttackManager::Update(float elapsedSec)
 {
     for (int index{ 0 }; index < m_Attacks.size(); ++index)
@@ -54,7 +59,7 @@ void AttackManager::ClearAttacks()
     m_Attacks.clear();
 }
 
-Attack* AttackManager::CheckCollisionAttacks(const std::vector<const Circlef&> players)
+Attack* AttackManager::CheckCollisionAttacks(const std::vector<Circlef> players)
 {
     for (int index{ 0 }; index < m_Attacks.size(); ++index)
     {

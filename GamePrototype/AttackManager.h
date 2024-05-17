@@ -6,6 +6,7 @@ class AttackManager
 {
 public:
 	AttackManager();
+	~AttackManager();
 
 	void Update(float elapsedSec);
 	void Draw() const;
@@ -14,7 +15,7 @@ public:
 	void DeleteAttack(Attack* attack);
 	void ClearAttacks();
 
-	Attack* CheckCollisionAttacks(const std::vector<const Circlef&> players);
+	Attack* CheckCollisionAttacks(const std::vector<Circlef> players);
 
 private:
 	std::vector<Attack*> m_Attacks;

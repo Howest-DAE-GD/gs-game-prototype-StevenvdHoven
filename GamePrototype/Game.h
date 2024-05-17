@@ -4,6 +4,7 @@
 #include <vector>
 #include <Texture.h>
 #include "AttackManager.h"
+#include "WaveManager.h"
 
 #define player1Color Color4f{0.f,1.f,0.f,1.f}
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
@@ -72,4 +73,5 @@ private:
 	TTF_Font* m_Font;
 
 	AttackManager* m_AttackManager;
+	WaveManager* m_WaveManager;
 };

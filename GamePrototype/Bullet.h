@@ -14,7 +14,7 @@ public:
 
 	void Update(float elapsedSec) override;
 	void Draw() const override;
-	bool CheckCollision(const std::vector<const Circlef&> players) const override;
+	bool CheckCollision(const std::vector<Circlef> players) const override;
 
 private:
 	Point2f m_Position;

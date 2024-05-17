@@ -24,7 +24,7 @@ void Bullet::Draw() const
 	utils::FillEllipse(ellipse);
 }
 
-bool Bullet::CheckCollision(const std::vector<const Circlef&> players) const
+bool Bullet::CheckCollision(const std::vector<Circlef> players) const
 {
 	const Circlef selfCollider{ m_Position,bullet_default_radius };
 	for (int index{ 0 }; index < players.size(); ++index)

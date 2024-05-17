@@ -19,7 +19,7 @@ void Attack::Draw() const
 {
 }
 
-bool Attack::CheckCollision(const std::vector<const Circlef&> players) const
+bool Attack::CheckCollision(const std::vector<Circlef> players) const
 {
 	return false;
 }
