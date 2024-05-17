@@ -3,21 +3,14 @@
 #include "utils.h"
 #include <vector>
 #include <Texture.h>
+#include "AttackManager.h"
 
 #define player1Color Color4f{0.f,1.f,0.f,1.f}
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
 #define playerRadius 50
 
-#define bulletRadius 10.f
-#define bulletSpeed 360.f
 
-struct Bullet 
-{
-	Point2f m_Position;
-	Vector2f m_Direction;
-	bool m_IsDead;
-	bool m_IsActivated;
-};
+
 
 class Game : public BaseGame
 {
@@ -47,12 +40,6 @@ private:
 	void Cleanup( );
 	void ClearBackground( ) const;
 
-	// Bullet functions
-	void CreateBullets(int amount);
-	void UpdateBullets(float elpasedSec);
-	void CheckBulletCollision();
-	void CheckForRespawn();
-
 	void SimulatePlayerMovement(float elapsedSec);
 	void CheckMaxDistance();
 	void HitRope();
@@ -62,7 +49,6 @@ private:
 	void UpdateText();
 
 	void DrawPlayers() const;
-	void DrawBullets() const;
 
 
 	// VARIABLES
@@ -76,12 +62,14 @@ private:
 	Vector2f m_Player2Direction;
 
 	std::vector<int> m_CurrentInput;
-	std::vector<Bullet> m_Bullets;
 
 	int m_CurrentBulletSpawn;
 
 	float m_Timer;
 	int m_Time;
+
 	Texture* m_TimerText;
 	TTF_Font* m_Font;
+
+	AttackManager* m_AttackManager;
 };

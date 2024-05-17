@@ -4,7 +4,7 @@
 Game::Game(const Window& window)
 	:BaseGame{ window },
 
-	m_MaxPlayerDistance{ 500 },
+	m_MaxPlayerDistance{ 800 },
 	m_PlayerSpeed{ 200 },
 	m_Player1Position{ Point2f(window.width * 0.5f,window.height * 0.5f) - Vector2f(100,0) },
 	m_Player2Position{ Point2f(window.width * 0.5f,window.height * 0.5f) + Vector2f(100,0) },
@@ -27,12 +27,13 @@ Game::~Game()
 void Game::Initialize()
 {
 	m_Font = TTF_OpenFont("arial.ttf", 20);
-	CreateBullets(10);
 	UpdateText();
 }
 
 void Game::Cleanup()
 {
+	delete m_TimerText;
+	TTF_CloseFont(m_Font);
 }
 
 void Game::Update(float elapsedSec)
@@ -44,32 +45,23 @@ void Game::Update(float elapsedSec)
 		UpdateText();
 
 	}
-	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
+
 	CheckInput();
 
 	SimulatePlayerMovement(elapsedSec);
 	CheckMaxDistance();
 
-	UpdateBullets(elapsedSec);
-	CheckBulletCollision();
-	CheckForRespawn();
+	m_AttackManager->Update(elapsedSec);
 }
 
 void Game::Draw() const
 {
 	ClearBackground();
 
+	m_AttackManager->Draw();
+
 	DrawPlayers();
-	DrawBullets();
+
 	int xWidth{ 0 };
 	int yWidth{ 0 };
 	const std::string text{ std::to_string(m_Time) };
@@ -156,98 +148,6 @@ void Game::ClearBackground() const
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Game::CreateBullets(int amount)
-{
-	Rectf viewport{ GetViewPort() };
-	const Point2f center{ viewport.width * 0.5f,viewport.height * 0.5f };
-	for (int index{ 0 }; index < amount; ++index)
-	{
-		int angle{ (rand() % 361) };
-		Point2f position
-		{
-			(cosf(angle) * viewport.width) + center.x,
-			(sinf(angle) * viewport.width) + center.y,
-		};
-
-		Vector2f direction{ Vector2f(center) - Vector2f(position) };
-		direction = direction / direction.Length();
-		Bullet newBullet
-		{
-			position,
-			direction,
-			false,
-			false
-		};
-
-		if (index >= m_Bullets.size()) {
-			m_Bullets.push_back(newBullet);
-		}
-		else {
-			m_Bullets[index] = newBullet;
-		}
-	}
-}
-
-void Game::UpdateBullets(float elpasedSec)
-{
-	Rectf viewport{ GetViewPort() };
-	for (int index{ 0 }; index < m_Bullets.size(); ++index)
-	{
-		if (m_Bullets[index].m_IsDead) {
-			continue;
-		}
-
-		Bullet& currentBullet{ m_Bullets[index] };
-		currentBullet.m_Position = currentBullet.m_Position + currentBullet.m_Direction * bulletSpeed * elpasedSec;
-		
-		const Circlef bullet{ currentBullet.m_Position,bulletRadius };
-		if (!utils::IsOverlapping(viewport,bullet)) {
-			if (currentBullet.m_IsActivated) {
-				currentBullet.m_IsDead = true;
-			}
-			
-		}
-		else 
-		{
-			currentBullet.m_IsActivated = true;
-		}
-		
-	}
-}
-
-void Game::CheckBulletCollision()
-{
-	for (int index{ 0 }; index < m_Bullets.size(); ++index)
-	{
-		if (m_Bullets[index].m_IsDead) {
-			continue;
-		}
-
-		const Circlef player1{ m_Player1Position,playerRadius };
-		const Circlef player2{ m_Player2Position,playerRadius };
-		const Circlef bullet{ m_Bullets[index].m_Position,bulletRadius };
-
-		if (utils::IsOverlapping(player1, bullet) || utils::IsOverlapping(player2, bullet)) {
-			m_Bullets[index].m_IsDead = true;
-			HitRope();
-			return;
-		}
-	}
-}
-
-void Game::CheckForRespawn()
-{
-	for (int index{ 0 }; index < m_Bullets.size(); ++index) {
-		if (!m_Bullets[index].m_IsDead) {
-			return;
-		}
-	}
-
-	CreateBullets(m_CurrentBulletSpawn);
-	m_CurrentBulletSpawn += 10;
-
-}
-
 void Game::SimulatePlayerMovement(float elapsedSec)
 {
 	Rectf viewport{ GetViewPort() };
@@ -322,7 +222,7 @@ void Game::CheckInput()
 void Game::RestartGame()
 {
 	Rectf window{ GetViewPort() };
-	m_MaxPlayerDistance = 500;
+	m_MaxPlayerDistance = 800;
 	m_Player1Position = Point2f{ Point2f(window.width * 0.5f,window.height * 0.5f) - Vector2f(100,0) };
 	m_Player2Position = Point2f{ Point2f(window.width * 0.5f,window.height * 0.5f) + Vector2f(100,0) };
 	m_Player1Direction = Vector2f{};
@@ -332,8 +232,6 @@ void Game::RestartGame()
 	m_Timer = 0;
 
 	UpdateText();
-
-	m_Bullets.clear();
 }
 
 void Game::UpdateText()
@@ -364,15 +262,4 @@ void Game::DrawPlayers() const
 
 }
 
-void Game::DrawBullets() const
-{
-	for (int index{ 0 }; index < m_Bullets.size(); ++index)
-	{
-		if (!m_Bullets[index].m_IsDead)
-		{
-			utils::SetColor(Color4f{ 1,0,0,1 });
-			utils::FillEllipse(m_Bullets[index].m_Position, bulletRadius, bulletRadius);
 
-		}
-	}
-}
