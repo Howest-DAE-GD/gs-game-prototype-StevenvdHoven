@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Game.h"
+#include "Attack.h"
 
 Game::Game(const Window& window)
 	:BaseGame{ window },
@@ -66,6 +67,11 @@ void Game::Update(float elapsedSec)
 	};
 
 	Attack* hitAttack{ m_AttackManager->CheckCollisionAttacks(players) };
+	if (hitAttack != nullptr) 
+	{
+		hitAttack->SetActive(false);
+		HitRope();
+	}
 }
 
 void Game::Draw() const
@@ -236,6 +242,8 @@ void Game::CheckInput()
 void Game::RestartGame()
 {
 	Rectf window{ GetViewPort() };
+	m_AttackManager->ClearAttacks();
+	m_WaveManager->SelectWave();
 	m_MaxPlayerDistance = 800;
 	m_Player1Position = Point2f{ Point2f(window.width * 0.5f,window.height * 0.5f) - Vector2f(100,0) };
 	m_Player2Position = Point2f{ Point2f(window.width * 0.5f,window.height * 0.5f) + Vector2f(100,0) };

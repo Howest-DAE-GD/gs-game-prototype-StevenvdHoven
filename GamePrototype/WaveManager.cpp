@@ -5,7 +5,7 @@
 
 WaveManager::WaveManager(AttackManager* attackMananger) :
 	m_CurrentTime{ 0 },
-	m_Cooldown{ 0 },
+	m_Cooldown{ wave_cooldown },
 	m_CurrentWave{ nullptr },
 	m_AttackManager{ attackMananger }
 {
@@ -31,9 +31,9 @@ WaveManager::~WaveManager()
 
 void WaveManager::Update(float elapsedSec)
 {
-	if (m_CurrentTime >= m_CurrentWave->GetMaxTime()) 
+	if (m_CurrentTime >= m_CurrentWave->GetMaxTime())
 	{
-		if (m_Cooldown <= 0) 
+		if (m_Cooldown <= 0)
 		{
 			m_Cooldown = wave_cooldown;
 			SelectWave();
@@ -42,17 +42,18 @@ void WaveManager::Update(float elapsedSec)
 		{
 			m_Cooldown -= elapsedSec;
 		}
-		
+
 	}
-	else 
+	else
 	{
 		m_CurrentTime += elapsedSec;
 		const float percent{ m_CurrentTime / m_CurrentWave->GetMaxTime() };
 		m_CurrentWave->SetCurrentPercent(percent);
+		m_CurrentWave->Update(elapsedSec);
 	}
-
-	m_CurrentWave->Update(elapsedSec);
 }
+
+	
 
 void WaveManager::SelectWave()
 {

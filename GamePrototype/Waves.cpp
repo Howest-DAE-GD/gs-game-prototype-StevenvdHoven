@@ -22,11 +22,12 @@ void CircleWave::Update(float elapsedSec)
 	{
 		m_CurrentTimer = wave_circle_spawnrate;
 		float angle{ 360 * GetCurrentPercent() };
+		angle = angle * (float(M_PI) / 180.f);
 
 		float x{ cosf(angle) * 1000 };
 		float y{ sinf(angle) * 1000 };
 
-		Point2f pos{ Point2f{x,y} + Vector2f{1920 * 0.5f,1080 * 0.5f} };
+		Point2f pos{ Point2f{1920 * 0.5f,1080 * 0.5f} + Vector2f{x,y} };
 		Vector2f dir{ screen_center - pos };
 		dir = dir / dir.Length();
 
@@ -69,7 +70,9 @@ void SquareWave::Update(float elapsedSec)
 		if (m_ReverseY) y = -bullet_default_radius;
 
 		Point2f pos{ x, y };
-		Vector2f dir{ screen_center - pos };
+		Vector2f dir{ 0,-1 };
+		if (m_ReverseY) dir.y = 1;
+
 		dir = dir / dir.Length();
 
 		Bullet* bullet{ new Bullet{pos, dir} };

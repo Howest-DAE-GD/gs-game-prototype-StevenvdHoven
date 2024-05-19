@@ -2,8 +2,8 @@
 #include "Wave.h"
 #include "utils.h"
 
-#define wave_circle_spawnrate .25f
-#define wave_square_spawnrate .2f
+#define wave_circle_spawnrate .1f
+#define wave_square_spawnrate .5f
 #define screen_center Point2f{1920 * 0.5, 1080 * 0.5}
 
 class CircleWave final : public Wave

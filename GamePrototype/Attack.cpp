@@ -3,7 +3,8 @@
 #include "AttackManager.h"
 
 Attack::Attack():
-	m_Active{false}
+	m_Active{true},
+	m_Manager{nullptr}
 {
 }
 
