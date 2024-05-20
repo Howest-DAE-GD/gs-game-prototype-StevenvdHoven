@@ -15,7 +15,10 @@ WaveManager::WaveManager(AttackManager* attackMananger) :
 		new SquareWave(10, attackMananger),
 		new SquareWave(10, attackMananger, true),
 		new SquareWave(10, attackMananger, true, true),
-		new SquareWave(10, attackMananger, false, true)
+		new SquareWave(10, attackMananger, false, true),
+		new SquareWaveRay(20,attackMananger),
+		new SquareWaveRay(20,attackMananger,true),
+		new SquareWaveRay(20,attackMananger, true, true),
 	};
 
 	SelectWave();
