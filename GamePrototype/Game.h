@@ -5,6 +5,7 @@
 #include <Texture.h>
 #include "AttackManager.h"
 #include "WaveManager.h"
+#include "RecoverSpawner.h"
 
 #define player1Color Color4f{0.f,1.f,0.f,1.f}
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
@@ -74,4 +75,5 @@ private:
 
 	AttackManager* m_AttackManager;
 	WaveManager* m_WaveManager;
+	RecoverSpawner* m_RecoverSpawner;
 };

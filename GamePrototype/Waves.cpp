@@ -97,6 +97,15 @@ SquareWaveRay::SquareWaveRay(float maxTime, AttackManager* attackManager, bool r
 
 SquareWaveRay::~SquareWaveRay()
 {
+	for (int index{ 0 }; index < m_Attacks.size(); ++index)
+	{
+		if (m_Attacks[index] != nullptr)
+		{
+			delete m_Attacks[index];
+			m_Attacks[index] = nullptr;
+		}
+	}
+	m_Attacks.clear();
 }
 
 void SquareWaveRay::Start()
@@ -132,7 +141,7 @@ void SquareWaveRay::GenerateAttacks()
 	int amount{ 1920 / ray_default_width };
 	if (m_ReverseY)
 		amount = 1080 / ray_default_width + 1;
-	std::vector<Ray*> attacks{ std::vector<Ray*>(amount) };
+	std::vector<Ray*> attacks;
 
 	for (int index{ 0 }; index < amount; ++index) 
 	{
@@ -147,8 +156,8 @@ void SquareWaveRay::GenerateAttacks()
 		Vector2f dir{ 0,-1 };
 		if (m_ReverseY) dir = Vector2f{1, 0 };
 
-		attacks[index] = new Ray{ pos,dir,colors };
+		attacks.push_back(new Ray{pos,dir,colors});
 	}
 
-	m_Attacks = std::move(attacks);
+	m_Attacks = attacks;
 }

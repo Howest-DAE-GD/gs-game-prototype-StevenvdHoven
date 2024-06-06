@@ -12,7 +12,7 @@ class Ray final : public Attack
 {
 public:
 	Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors);
-	~Ray();
+	virtual ~Ray();
 
 	void Update(float elapsedSec) override;
 	void Draw() const override;

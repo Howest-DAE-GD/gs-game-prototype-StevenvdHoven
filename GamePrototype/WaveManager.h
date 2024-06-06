@@ -2,7 +2,7 @@
 #include "AttackManager.h"
 #include <vector>
 
-#define wave_cooldown 15
+#define wave_cooldown 3
 
 class Wave;
 class WaveManager

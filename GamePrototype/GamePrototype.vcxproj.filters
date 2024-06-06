@@ -48,6 +48,9 @@
     <ClCompile Include="Wave.cpp">
       <Filter>Waves</Filter>
     </ClCompile>
+    <ClCompile Include="RecoverSpawner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -75,6 +78,9 @@
       <Filter>Waves</Filter>
     </ClInclude>
     <ClInclude Include="Ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RecoverSpawner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

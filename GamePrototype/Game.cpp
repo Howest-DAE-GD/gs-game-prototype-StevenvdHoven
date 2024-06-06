@@ -17,7 +17,8 @@ Game::Game(const Window& window)
 	m_TimerText{nullptr},
 	m_Font{nullptr},
 	m_AttackManager{new AttackManager()},
-	m_WaveManager{new WaveManager(m_AttackManager)}
+	m_WaveManager{new WaveManager(m_AttackManager)},
+	m_RecoverSpawner{new RecoverSpawner()}
 {
 	Initialize();
 }
@@ -35,11 +36,13 @@ void Game::Initialize()
 
 void Game::Cleanup()
 {
-	delete m_TimerText;
 	TTF_CloseFont(m_Font);
+	m_Font = nullptr;
 
+	delete m_TimerText;
 	delete m_AttackManager;
 	delete m_WaveManager;
+	delete m_RecoverSpawner;
 }
 
 void Game::Update(float elapsedSec)
@@ -59,6 +62,7 @@ void Game::Update(float elapsedSec)
 
 	m_AttackManager->Update(elapsedSec);
 	m_WaveManager->Update(elapsedSec);
+	m_RecoverSpawner->Update(elapsedSec,m_MaxPlayerDistance);
 
 	const std::vector<Circlef> players
 	{
@@ -72,6 +76,12 @@ void Game::Update(float elapsedSec)
 		hitAttack->SetActive(false);
 		HitRope();
 	}
+
+	if (m_RecoverSpawner->CheckCollision(players))
+	{
+		m_RecoverSpawner->Collect();
+		m_MaxPlayerDistance += 100;
+	}
 }
 
 void Game::Draw() const
@@ -79,6 +89,7 @@ void Game::Draw() const
 	ClearBackground();
 
 	m_AttackManager->Draw();
+	m_RecoverSpawner->Draw();
 
 	DrawPlayers();
 
