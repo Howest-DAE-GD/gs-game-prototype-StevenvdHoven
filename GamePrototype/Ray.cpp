@@ -1,10 +1,11 @@
 #include "pch.h"
 #include "Ray.h"
 
-Ray::Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors):
+Ray::Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors, float width):
 	m_Position{pos},
 	m_Direction{dir},
 	m_Timer{ray_default_warning_time},
+	m_Width{width},
 	m_Colors{colors},
 	m_SoundPlayed{false}
 {
@@ -14,24 +15,24 @@ Ray::Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors):
 	m_OnShootSound = new SoundEffect{ "Audio/laser-zap-90575.mp3" };
 
 	m_Poly = {
-		m_Position + up * (ray_default_width * 0.5),
-		m_Position + down * (ray_default_width * 0.5),
-		m_Position + down * (ray_default_width * 0.5) + m_Direction * ray_default_length,
-		m_Position + up * (ray_default_width * 0.5) + m_Direction * ray_default_length,
+		m_Position + up * (m_Width * 0.5),
+		m_Position + down * (m_Width * 0.5),
+		m_Position + down * (m_Width * 0.5) + m_Direction * ray_default_length,
+		m_Position + up * (m_Width * 0.5) + m_Direction * ray_default_length,
 	};
 
 	m_InnerPoly = {
-			m_Position + up * (ray_default_width * 0.3),
-			m_Position + down * (ray_default_width * 0.3),
-			m_Position + down * (ray_default_width * 0.3) + m_Direction * ray_default_length,
-			m_Position + up * (ray_default_width * 0.3) + m_Direction * ray_default_length,
+			m_Position + up * (m_Width * 0.3),
+			m_Position + down * (m_Width * 0.3),
+			m_Position + down * (m_Width * 0.3) + m_Direction * ray_default_length,
+			m_Position + up * (m_Width * 0.3) + m_Direction * ray_default_length,
 	};
 	
 	m_CenterPoly = {
-			m_Position + up * (ray_default_width * 0.1),
-			m_Position + down * (ray_default_width * 0.1),
-			m_Position + down * (ray_default_width * 0.1) + m_Direction * ray_default_length,
-			m_Position + up * (ray_default_width * 0.1) + m_Direction * ray_default_length,
+			m_Position + up * (m_Width * 0.1),
+			m_Position + down * (m_Width * 0.1),
+			m_Position + down * (m_Width * 0.1) + m_Direction * ray_default_length,
+			m_Position + up * (m_Width * 0.1) + m_Direction * ray_default_length,
 	};
 }
 

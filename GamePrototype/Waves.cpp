@@ -113,18 +113,15 @@ void SquareWaveRay::Start()
 
 void SquareWaveRay::Update(float elapsedSec)
 {
-	if (m_CurrentTimer <= 0)
+	float elapsedTime{ GetCurrentPercent() - m_lastPercent };
+	if (elapsedTime > wave_square_ray_spawnrate)
 	{
-		m_CurrentTimer = wave_square_ray_spawnrate;
 		if (m_AttackIndex < m_Attacks.size()) {
 			m_AttackManager->AddAttack(m_Attacks[m_AttackIndex]);
 			m_Attacks[m_AttackIndex] = nullptr;
 			++m_AttackIndex;
 		}
-	}
-	else
-	{
-		m_CurrentTimer -= elapsedSec;
+		m_lastPercent = GetCurrentPercent();
 	}
 }
 
@@ -161,16 +158,77 @@ void SquareWaveRay::GenerateAttacks()
 	m_Attacks = attacks;
 }
 
-BothSquareWave::BothSquareWave(float maxTime, AttackManager* attackManager):
-	Wave(maxTime,attackManager)
+BothSquareWave::BothSquareWave(float maxTime, AttackManager* attackManager, float spawnRate) :
+	Wave(maxTime, attackManager),
+	m_SpawnRate{spawnRate},
+	m_Timer{ -1 }
 {
 }
 
 void BothSquareWave::Start()
 {
-
+	
 }
 
 void BothSquareWave::Update(float elapsedSec)
+{
+	m_Timer -= elapsedSec;
+	if (m_Timer < 0)
+	{
+		m_Timer = m_SpawnRate;
+
+		for (int index{ 0 }; index < 10; ++index)
+		{
+			Point2f pos{ 1920.f * float(index / 10.f),1100 };
+			Vector2f dir{ 0,-1 };
+			Bullet* bullet{ new Bullet{pos,dir} };
+			m_AttackManager->AddAttack(bullet);
+		}
+
+		for (int index{ 0 }; index < 10; ++index)
+		{
+			Point2f pos{ 50 + 1920.f * float(index / 10.f),-100 };
+			Vector2f dir{ 0,1 };
+			Bullet* bullet{ new Bullet{pos,dir} };
+			m_AttackManager->AddAttack(bullet);
+		}
+	}
+}
+
+JailWaveRay::JailWaveRay(float maxTime, AttackManager* attackManager, int spacing, int width):
+	Wave(maxTime,attackManager),
+	m_Spacing{spacing},
+	m_Width{width}
+{
+}
+
+JailWaveRay::~JailWaveRay()
+{
+}
+
+void JailWaveRay::Start()
+{
+	int amount{ 1920 / int(m_Width + m_Spacing * 0.5f) };
+
+	std::vector<Color4f> colors
+	{
+		Color4f{1,0,0,1},
+		Color4f{0.8f,0.2f,0,1},
+		Color4f{0.5f,0.5f,0,1},
+	};
+
+	float x{ m_Width*0.5f };
+	for (int index{ 0 }; index < amount; ++index)
+	{
+		Point2f pos{x,1090};
+		Ray* ray{ new Ray{pos,Vector2f{0,-1},colors,float(m_Width)} };
+		m_AttackManager->AddAttack(ray);
+
+		x += m_Width + m_Spacing;
+	}
+
+}
+
+void JailWaveRay::Update(float elapsedSec)
 {
 }

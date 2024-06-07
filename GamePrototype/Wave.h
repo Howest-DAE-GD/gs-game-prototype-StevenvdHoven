@@ -17,6 +17,7 @@ public:
 protected:
 	AttackManager* m_AttackManager;
 	float m_CurrentTimer;
+	float m_lastPercent;
 
 private:
 	float m_MaxTime;

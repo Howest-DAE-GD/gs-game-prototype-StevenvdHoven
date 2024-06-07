@@ -12,7 +12,7 @@
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
 #define playerHitColor Color4f{0.7f,0.5f,0,1}
 #define hitcooldown 1.5f
-#define playerRadius 50
+#define playerRadius 25
 
 
 
