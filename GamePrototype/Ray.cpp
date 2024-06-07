@@ -5,10 +5,13 @@ Ray::Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors):
 	m_Position{pos},
 	m_Direction{dir},
 	m_Timer{ray_default_warning_time},
-	m_Colors{colors}
+	m_Colors{colors},
+	m_SoundPlayed{false}
 {
 	Vector2f up{ m_Direction.y, -m_Direction.x };
 	Vector2f down{ -up };
+
+	m_OnShootSound = new SoundEffect{ "Audio/laser-zap-90575.mp3" };
 
 	m_Poly = {
 		m_Position + up * (ray_default_width * 0.5),
@@ -34,11 +37,20 @@ Ray::Ray(const Point2f& pos, const Vector2f& dir, std::vector<Color4f> colors):
 
 Ray::~Ray()
 {
+	delete m_OnShootSound;
 }
 
 void Ray::Update(float elapsedSec)
 {
 	m_Timer -= elapsedSec;
+	if (m_Timer <= 0 && !m_SoundPlayed)
+	{
+		m_SoundPlayed = true;
+		m_OnShootSound->SetVolume(70);
+		m_OnShootSound->Play(0);
+		
+	}
+
 	if (m_Timer < -0.5f) 
 	{
 		SetActive(false);

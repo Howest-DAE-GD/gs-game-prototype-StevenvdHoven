@@ -14,6 +14,8 @@ Game::Game(const Window& window)
 	m_CurrentBulletSpawn{ 20 },
 	m_Time{ 0 },
 	m_Timer{0},
+	m_HitCooldown{-1},
+	m_PlayersHit{false},
 	m_TimerText{nullptr},
 	m_Font{nullptr},
 	m_AttackManager{new AttackManager()},
@@ -32,6 +34,8 @@ void Game::Initialize()
 {
 	m_Font = TTF_OpenFont("arial.ttf", 20);
 	UpdateText();
+	m_HitSound = new SoundEffect{ "Audio/hitHurt.wav" };
+	m_CollectSound = new SoundEffect{ "Audio/pickupCoin.wav" };
 }
 
 void Game::Cleanup()
@@ -43,6 +47,8 @@ void Game::Cleanup()
 	delete m_AttackManager;
 	delete m_WaveManager;
 	delete m_RecoverSpawner;
+	delete m_HitSound;
+	delete m_CollectSound;
 }
 
 void Game::Update(float elapsedSec)
@@ -55,6 +61,18 @@ void Game::Update(float elapsedSec)
 
 	}
 
+	if (m_PlayersHit)
+	{
+		if (m_HitCooldown > 0)
+		{
+			m_HitCooldown -= elapsedSec;
+			if (m_HitCooldown <= 0)
+			{
+				m_PlayersHit = false;
+			}
+		}
+	}
+
 	CheckInput();
 
 	SimulatePlayerMovement(elapsedSec);
@@ -62,7 +80,7 @@ void Game::Update(float elapsedSec)
 
 	m_AttackManager->Update(elapsedSec);
 	m_WaveManager->Update(elapsedSec);
-	m_RecoverSpawner->Update(elapsedSec,m_MaxPlayerDistance);
+	m_RecoverSpawner->Update(elapsedSec, m_MaxPlayerDistance);
 
 	const std::vector<Circlef> players
 	{
@@ -71,14 +89,17 @@ void Game::Update(float elapsedSec)
 	};
 
 	Attack* hitAttack{ m_AttackManager->CheckCollisionAttacks(players) };
-	if (hitAttack != nullptr) 
+	if (hitAttack != nullptr && !m_PlayersHit) 
 	{
 		hitAttack->SetActive(false);
 		HitRope();
+		m_PlayersHit = true;
+		m_HitCooldown = hitcooldown;
 	}
 
 	if (m_RecoverSpawner->CheckCollision(players))
 	{
+		m_CollectSound->Play(0);
 		m_RecoverSpawner->Collect();
 		m_MaxPlayerDistance += 100;
 	}
@@ -226,6 +247,7 @@ void Game::CheckMaxDistance()
 void Game::HitRope()
 {
 	m_MaxPlayerDistance -= 100;
+	m_HitSound->Play(0);
 	if (m_MaxPlayerDistance < 100) {
 		RestartGame();
 	}
@@ -288,9 +310,18 @@ void Game::DrawPlayers() const
 	utils::DrawLine(m_Player1Position, m_Player2Position, 1.f + (maxLineWidth * percent));
 
 	utils::SetColor(player1Color);
+	if (m_PlayersHit)
+	{
+		utils::SetColor(Color4f::Lerp(player1Color, playerHitColor, sinf((1 - (m_HitCooldown / hitcooldown)) * M_PI) * 0.5f + 0.5f));
+	}
+
 	utils::FillEllipse(m_Player1Position, playerRadius, playerRadius);
 
 	utils::SetColor(player2Color);
+	if (m_PlayersHit)
+	{
+		utils::SetColor(Color4f::Lerp(player2Color, playerHitColor, sinf((1 - (m_HitCooldown / hitcooldown)) * M_PI) * 0.5f + 0.5f));
+	}
 	utils::FillEllipse(m_Player2Position, playerRadius, playerRadius);
 
 }

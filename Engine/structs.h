@@ -45,6 +45,8 @@ struct Color4f
 	float g;
 	float b;
 	float a;
+
+	static Color4f Lerp(const Color4f& a, const Color4f& b, float t);
 };
 
 struct Circlef

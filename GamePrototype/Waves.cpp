@@ -92,7 +92,6 @@ SquareWaveRay::SquareWaveRay(float maxTime, AttackManager* attackManager, bool r
 	m_ReverseY{ reverseY },
 	m_AttackIndex{0}
 {
-	GenerateAttacks();
 }
 
 SquareWaveRay::~SquareWaveRay()
@@ -102,7 +101,6 @@ SquareWaveRay::~SquareWaveRay()
 		if (m_Attacks[index] != nullptr)
 		{
 			delete m_Attacks[index];
-			m_Attacks[index] = nullptr;
 		}
 	}
 	m_Attacks.clear();
@@ -110,7 +108,7 @@ SquareWaveRay::~SquareWaveRay()
 
 void SquareWaveRay::Start()
 {
-	
+	GenerateAttacks();
 }
 
 void SquareWaveRay::Update(float elapsedSec)
@@ -120,6 +118,7 @@ void SquareWaveRay::Update(float elapsedSec)
 		m_CurrentTimer = wave_square_ray_spawnrate;
 		if (m_AttackIndex < m_Attacks.size()) {
 			m_AttackManager->AddAttack(m_Attacks[m_AttackIndex]);
+			m_Attacks[m_AttackIndex] = nullptr;
 			++m_AttackIndex;
 		}
 	}
@@ -160,4 +159,18 @@ void SquareWaveRay::GenerateAttacks()
 	}
 
 	m_Attacks = attacks;
+}
+
+BothSquareWave::BothSquareWave(float maxTime, AttackManager* attackManager):
+	Wave(maxTime,attackManager)
+{
+}
+
+void BothSquareWave::Start()
+{
+
+}
+
+void BothSquareWave::Update(float elapsedSec)
+{
 }

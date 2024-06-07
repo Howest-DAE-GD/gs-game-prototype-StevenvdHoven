@@ -1,7 +1,7 @@
 #pragma once
 #include "utils.h"
 
-#define recover_ball_radius 50
+#define recover_ball_radius 25
 #define recover_ball_timer 10
 
 

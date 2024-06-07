@@ -6,9 +6,12 @@
 #include "AttackManager.h"
 #include "WaveManager.h"
 #include "RecoverSpawner.h"
+#include "SoundEffect.h"
 
 #define player1Color Color4f{0.f,1.f,0.f,1.f}
 #define player2Color Color4f{0.f,0.f,0.75f,1.f}
+#define playerHitColor Color4f{0.7f,0.5f,0,1}
+#define hitcooldown 1.5f
 #define playerRadius 50
 
 
@@ -63,6 +66,9 @@ private:
 	Vector2f m_Player1Direction;
 	Vector2f m_Player2Direction;
 
+	bool m_PlayersHit;
+	float m_HitCooldown;
+
 	std::vector<int> m_CurrentInput;
 
 	int m_CurrentBulletSpawn;
@@ -76,4 +82,7 @@ private:
 	AttackManager* m_AttackManager;
 	WaveManager* m_WaveManager;
 	RecoverSpawner* m_RecoverSpawner;
+
+	SoundEffect* m_HitSound;
+	SoundEffect* m_CollectSound;
 };

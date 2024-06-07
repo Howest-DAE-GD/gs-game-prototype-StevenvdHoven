@@ -56,6 +56,17 @@ Color4f::Color4f( float r, float g, float b, float a )
 {
 }
 
+Color4f Color4f::Lerp(const Color4f& a, const Color4f& b, float t)
+{
+	return Color4f
+	{
+		a.r + (b.r - a.r) * t,
+		a.g + (b.g - a.g) * t,
+		a.b + (b.b - a.b) * t,
+		a.a + (b.a - a.a) * t,
+	};
+}
+
 //-----------------------------------------------------------------
 // Circlef Constructors
 //-----------------------------------------------------------------

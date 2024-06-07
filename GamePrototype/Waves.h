@@ -35,6 +35,15 @@ private:
 	bool m_ReverseY;
 };
 
+class BothSquareWave final : public Wave
+{
+public:
+	BothSquareWave(float maxTime, AttackManager* attackManager);
+
+	void Start() override;
+	void Update(float elapsedSec) override;
+};
+
 class SquareWaveRay final : public Wave
 {
 public:

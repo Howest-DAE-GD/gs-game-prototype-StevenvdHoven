@@ -1,6 +1,7 @@
 #pragma once
 #include "Attack.h"
 #include "utils.h"
+#include "SoundEffect.h"
 
 #define ray_default_warning_color Color4f{1,1,0,1.f}
 #define ray_default_warning_time 1.5f
@@ -30,6 +31,7 @@ private:
 	std::vector<Point2f> m_InnerPoly;
 	std::vector<Point2f> m_CenterPoly;
 
-
+	SoundEffect* m_OnShootSound;
+	bool m_SoundPlayed;
 };
 
