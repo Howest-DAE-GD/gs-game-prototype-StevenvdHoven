@@ -6,6 +6,7 @@
 WaveManager::WaveManager(AttackManager* attackMananger) :
 	m_CurrentTime{ 0 },
 	m_Cooldown{ wave_cooldown },
+	m_AmoutOfWaves{ 0 },
 	m_CurrentWave{ nullptr },
 	m_AttackManager{ attackMananger }
 {
@@ -13,11 +14,6 @@ WaveManager::WaveManager(AttackManager* attackMananger) :
 	{
 		new CircleWave(5, attackMananger),
 		new CircleWave(10, attackMananger),
-		new CircleWave(15, attackMananger),
-		new SquareWave(10, attackMananger),
-		new SquareWave(10, attackMananger, true),
-		new SquareWave(10, attackMananger, true, true),
-		new SquareWave(10, attackMananger, false, true),
 		new SquareWave(5, attackMananger),
 		new SquareWave(5, attackMananger, true),
 		new SquareWave(5, attackMananger, true, true),
@@ -79,4 +75,10 @@ void WaveManager::SelectWave()
 	m_AttackManager->ClearAttacks();
 	m_CurrentWave->Start();
 	m_CurrentTime = 0;
+	++m_AmoutOfWaves;
+}
+
+int WaveManager::GetWaves()
+{
+	return m_AmoutOfWaves;
 }

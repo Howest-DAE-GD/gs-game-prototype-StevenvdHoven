@@ -295,7 +295,7 @@ void Game::UpdateText()
 		delete m_TimerText;
 	}
 
-	std::string newText{ std::to_string(m_Time) };
+	std::string newText{ "Wave: " + std::to_string(m_WaveManager->GetWaves())};
 	m_TimerText = new Texture(newText, m_Font, Color4f{ 1,1,1,1 });
 }
 
